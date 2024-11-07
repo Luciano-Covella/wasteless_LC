@@ -33,29 +33,26 @@ for index, row in df.iterrows():
     remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])
     remaining_quantity = max(0, remaining_quantity)  # Verbleibende Menge auf 0 setzen, falls negativ
     
-    # Erstelle eine horizontale Anordnung der Benutzer mit `st.columns`
-    columns = st.columns(len(benutzer))
-    
-    # Benutzer einzeln die Anzahl zuweisen
-    for col, benutzer_name in zip(columns, benutzer):
-        if remaining_quantity > 0:
+    # Nur fortfahren, wenn noch Einheiten verfügbar sind
+    if remaining_quantity > 0:
+        # Erstelle eine horizontale Anordnung der Benutzer mit `st.columns`
+        columns = st.columns(len(benutzer))
+        
+        # Benutzer einzeln die Anzahl zuweisen
+        for col, benutzer_name in zip(columns, benutzer):
             with col:
                 # Zeige den Benutzernamen
                 st.write(benutzer_name)
                 
                 # Vertikaler Slider zur Zuweisung der Anzahl der Einheiten
-                try:
-                    einheiten = st.slider(
-                        f"Anzahl der Einheiten für {benutzer_name} (Max: {remaining_quantity}):",
-                        min_value=0,
-                        max_value=int(remaining_quantity),  # Sicherstellen, dass max_value ein ganzzahliger Wert ist
-                        value=0,
-                        key=f"units_slider_{index}_{benutzer_name}_{row['Name']}",
-                        orientation="vertical"  # Slider senkrecht anzeigen
-                    )
-                except TypeError:
-                    # Fallback-Wert verwenden, falls ein Fehler auftritt
-                    einheiten = 0
+                einheiten = st.slider(
+                    f"Anzahl der Einheiten für {benutzer_name} (Max: {remaining_quantity}):",
+                    min_value=0,
+                    max_value=int(remaining_quantity),
+                    value=0,
+                    key=f"units_slider_{index}_{benutzer_name}_{row['Name']}",
+                    orientation="vertical"  # Slider senkrecht anzeigen
+                )
                 
                 # Füge die Benutzerzuweisungen hinzu, wenn Einheiten zugewiesen werden
                 if einheiten > 0:
