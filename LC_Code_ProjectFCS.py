@@ -3,9 +3,9 @@ import pandas as pd
 
 # Beispiel-Daten: Liste der Lebensmittel mit allen Details
 lebensmittel_data = [
-    {"Name": "Apfel", "Preis": 2.5, "Menge": 1, "Ablaufdatum": "2024-11-10", "Anzahl der Käufe": 5},
-    {"Name": "Milch", "Preis": 1.2, "Menge": 1, "Ablaufdatum": "2024-11-05", "Anzahl der Käufe": 3},
-    {"Name": "Brot", "Preis": 3.0, "Menge": 1, "Ablaufdatum": "2024-11-03", "Anzahl der Käufe": 7}
+    {"Name": "Apfel", "Preis": 2.5, "Menge": 5, "Ablaufdatum": "2024-11-10", "Anzahl der Käufe": 5},
+    {"Name": "Milch", "Preis": 1.2, "Menge": 3, "Ablaufdatum": "2024-11-05", "Anzahl der Käufe": 3},
+    {"Name": "Brot", "Preis": 3.0, "Menge": 7, "Ablaufdatum": "2024-11-03", "Anzahl der Käufe": 7}
 ]
 
 # Liste der Benutzer
@@ -15,7 +15,7 @@ benutzer = ["Alice", "Bob", "Charlie"]
 df = pd.DataFrame(lebensmittel_data)
 
 # Füge eine Spalte für die Benutzerzuweisung hinzu
-df["Zugewiesen an"] = None
+df["Zugewiesen an"] = [[] for _ in range(len(df))]  # Leere Listen für Zuweisungen
 
 # Streamlit-Anwendung
 st.title("Lebensmittel-Zuweisung an Benutzer")
@@ -27,14 +27,21 @@ st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 # Zuweisungsformular für jedes Lebensmittel
 st.subheader("Lebensmittel einem Benutzer zuweisen")
 for index, row in df.iterrows():
-    benutzer_option = st.selectbox(
-        f"Zuweisung für {row['Name']}:", 
-        ["Niemand"] + benutzer, 
-        index=0,
-        key=index
-    )
-    # Aktualisiere die Zuweisung im DataFrame
-    df.at[index, "Zugewiesen an"] = benutzer_option if benutzer_option != "Niemand" else None
+    st.write(f"Zuweisung für {row['Name']} (Anzahl: {row['Menge']})")
+    
+    # Verteilen Sie die Menge auf die Benutzer
+    remaining_quantity = row["Menge"]
+    while remaining_quantity > 0:
+        benutzer_option = st.selectbox(
+            f"Wähle einen Benutzer (Verbleibend: {remaining_quantity}):",
+            ["Niemand"] + benutzer,
+            index=0,
+            key=f"user_select_{index}_{remaining_quantity}"
+        )
+        if benutzer_option != "Niemand":
+            # Reduzieren Sie die verbleibende Menge und fügen Sie die Zuweisung hinzu
+            df.at[index, "Zugewiesen an"].append(benutzer_option)
+            remaining_quantity -= 1
 
 # Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Aktualisierte Lebensmittelübersicht")
@@ -42,12 +49,13 @@ st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 
 # Berechnung der anteiligen Kosten pro Benutzer
 st.subheader("Anteiliges Bezahlen")
-kosten_pro_benutzer = {}
+kosten_pro_benutzer = {benutzer: 0 for benutzer in benutzer}
 
-# Berechne die Kosten für jeden Benutzer basierend auf den zugewiesenen Lebensmitteln
-for b in benutzer:
-    gesamtpreis = df[df["Zugewiesen an"] == b]["Preis"].sum()
-    kosten_pro_benutzer[b] = gesamtpreis
+# Berechne die Kosten für jeden Benutzer basierend auf den zugewiesenen Einheiten der Lebensmittel
+for index, row in df.iterrows():
+    preis_pro_einheit = row["Preis"] / row["Menge"]
+    for zugewiesener_benutzer in row["Zugewiesen an"]:
+        kosten_pro_benutzer[zugewiesener_benutzer] += preis_pro_einheit
 
 # Zeige die anteiligen Kosten für jeden Benutzer
 st.subheader("Kosten pro Benutzer")
