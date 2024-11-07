@@ -29,8 +29,8 @@ st.subheader("Lebensmittel einem Benutzer zuweisen")
 for index, row in df.iterrows():
     st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {row['Menge'] - len(row['Zugewiesen an'])})")
     
-    # Verbleibende Menge berechnen
-    remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])
+    # Verbleibende Menge berechnen und sicherstellen, dass sie nicht negativ ist
+    remaining_quantity = max(0, row["Menge"] - len(row["Zugewiesen an"]))
     
     # Erstelle eine horizontale Anordnung der Benutzer mit `st.columns`
     columns = st.columns(len(benutzer))
