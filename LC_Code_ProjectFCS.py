@@ -29,9 +29,9 @@ st.subheader("Lebensmittel einem Benutzer zuweisen")
 for index, row in df.iterrows():
     st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {row['Menge'] - len(row['Zugewiesen an'])})")
     
-    # Verbleibende Menge berechnen und sicherstellen, dass sie nicht negativ ist
+    # Verbleibende Menge berechnen und sicherstellen, dass sie gültig ist
     remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])
-    remaining_quantity = max(0, remaining_quantity)  # Verbleibende Menge auf 0 setzen, falls negativ
+    remaining_quantity = max(0, int(remaining_quantity))  # Sicherstellen, dass es eine positive Ganzzahl ist
     
     # Nur fortfahren, wenn noch Einheiten verfügbar sind
     if remaining_quantity > 0:
@@ -48,7 +48,7 @@ for index, row in df.iterrows():
                 einheiten = st.slider(
                     f"Anzahl der Einheiten für {benutzer_name} (Max: {remaining_quantity}):",
                     min_value=0,
-                    max_value=int(remaining_quantity),
+                    max_value=remaining_quantity,
                     value=0,
                     key=f"units_slider_{index}_{benutzer_name}_{row['Name']}",
                     orientation="vertical"  # Slider senkrecht anzeigen
