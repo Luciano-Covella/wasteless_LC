@@ -49,18 +49,19 @@ for index, row in df.iterrows():
             # Zeige die aktuelle Anzahl
             einheiten = st.session_state[f"{benutzer_name}_{index}"]
 
-            # Die "+" Taste ist nur aktiv, wenn noch Einheiten verfügbar sind
-            if remaining_quantity > 0 and st.button("➕", key=f"plus_{index}_{benutzer_name}"):
-                if einheiten < remaining_quantity:
+            # Die "+" Taste erhöht die Anzahl, aber nur, wenn die Gesamtanzahl nicht überschritten wird
+            if st.button("➕", key=f"plus_{index}_{benutzer_name}", disabled=remaining_quantity <= 0):
+                if einheiten < total_quantity:
                     einheiten += 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
                     remaining_quantity -= 1  # Verringere die verfügbare Menge
 
-            # Die "-" Taste ist nur aktiv, wenn die Anzahl größer als 0 ist
-            if einheiten > 0 and st.button("➖", key=f"minus_{index}_{benutzer_name}"):
-                einheiten -= 1
-                st.session_state[f"{benutzer_name}_{index}"] = einheiten
-                remaining_quantity += 1  # Erhöhe die verfügbare Menge
+            # Die "-" Taste verringert die Anzahl, aber nur, wenn die Anzahl größer als 0 ist
+            if st.button("➖", key=f"minus_{index}_{benutzer_name}", disabled=einheiten <= 0):
+                if einheiten > 0:
+                    einheiten -= 1
+                    st.session_state[f"{benutzer_name}_{index}"] = einheiten
+                    remaining_quantity += 1  # Erhöhe die verfügbare Menge
 
             # Aktualisiere die Zuweisungsliste entsprechend der Anzahl
             zugewiesen = [benutzer_name] * einheiten
