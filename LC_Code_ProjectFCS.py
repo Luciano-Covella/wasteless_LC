@@ -27,11 +27,13 @@ st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 # Zuweisungsformular für jedes Lebensmittel
 st.subheader("Lebensmittel einem Benutzer zuweisen")
 for index, row in df.iterrows():
-    st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {row['Menge'] - len(row['Zugewiesen an'])})")
-    
-    # Verbleibende Menge berechnen und sicherstellen, dass sie gültig ist
+    # Verbleibende Menge berechnen
     remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])
+    
+    # Nur fortfahren, wenn noch Einheiten verfügbar sind
     if remaining_quantity > 0:
+        st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {remaining_quantity})")
+        
         # Erstelle eine horizontale Anordnung der Benutzer mit `st.columns`
         columns = st.columns(len(benutzer))
         
@@ -41,7 +43,7 @@ for index, row in df.iterrows():
                 # Zeige den Benutzernamen
                 st.write(benutzer_name)
                 
-                # Vertikaler Slider zur Zuweisung der Anzahl der Einheiten
+                # Slider zur Zuweisung der Anzahl der Einheiten
                 einheiten = st.slider(
                     f"Anzahl der Einheiten für {benutzer_name}",
                     min_value=0,
@@ -53,6 +55,11 @@ for index, row in df.iterrows():
                 # Wenn Einheiten zugewiesen werden, füge sie zur Zuweisungsliste hinzu
                 if einheiten > 0:
                     df.at[index, "Zugewiesen an"].extend([benutzer_name] * einheiten)
+                    remaining_quantity -= einheiten
+
+    else:
+        # Wenn keine Einheiten mehr verfügbar sind, informiere den Benutzer
+        st.write(f"Alle {row['Name']} sind zugewiesen.")
 
 # Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Aktualisierte Lebensmittelübersicht")
