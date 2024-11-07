@@ -22,7 +22,7 @@ st.title("Lebensmittel-Zuweisung an Benutzer")
 
 # Zeige die Lebensmittelübersicht (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Lebensmittelübersicht")
-st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]], index=False)
+st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 
 # Zuweisungsformular für jedes Lebensmittel
 st.subheader("Lebensmittel einem Benutzer zuweisen")
@@ -38,7 +38,7 @@ for index, row in df.iterrows():
 
 # Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Aktualisierte Lebensmittelübersicht")
-st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]], index=False)
+st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 
 # Berechnung der anteiligen Kosten pro Benutzer
 st.subheader("Anteiliges Bezahlen")
