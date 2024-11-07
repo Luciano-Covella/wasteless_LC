@@ -50,13 +50,13 @@ for index, row in df.iterrows():
             einheiten = st.session_state[f"{benutzer_name}_{index}"]
 
             # Erhöhe die Anzahl mit der "+" Taste
-            if st.button("+", key=f"plus_{index}_{benutzer_name}"):
+            if st.button("➕", key=f"plus_{index}_{benutzer_name}"):
                 if einheiten < remaining_quantity:
                     einheiten += 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
             
             # Verringere die Anzahl mit der "-" Taste
-            if st.button("-", key=f"minus_{index}_{benutzer_name}"):
+            if st.button("➖", key=f"minus_{index}_{benutzer_name}"):
                 if einheiten > 0:
                     einheiten -= 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
