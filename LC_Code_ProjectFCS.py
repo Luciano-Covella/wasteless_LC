@@ -52,6 +52,10 @@ for index, row in df.iterrows():
             # Zeige die aktuelle Anzahl
             einheiten = st.session_state[f"{benutzer_name}_{index}"]
 
+            # Berechne remaining_quantity vor jedem Button-Klick, basierend auf dem aktuellen Zustand
+            zugewiesene_menge = sum([st.session_state.get(f"{benutzer_name}_{index}", 0) for benutzer_name in benutzer])
+            remaining_quantity = total_quantity - zugewiesene_menge
+
             # Die "+" Taste ist nur aktiv, wenn noch Einheiten verfügbar sind
             plus_disabled = remaining_quantity <= 0
             if st.button("➕", key=f"plus_{index}_{benutzer_name}", disabled=plus_disabled):
