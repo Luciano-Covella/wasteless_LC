@@ -27,7 +27,7 @@ st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 # Zuweisungsformular für jedes Lebensmittel
 st.subheader("Lebensmittel einem Benutzer zuweisen")
 for index, row in df.iterrows():
-    st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {row['Menge']})")
+    st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {row['Menge'] - len(row['Zugewiesen an'])})")
     
     # Benutzer auswählen
     remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])  # Verbleibende Menge
@@ -41,12 +41,12 @@ for index, row in df.iterrows():
 
         if benutzer_option != "Niemand":
             # Anzahl der Einheiten auswählen
-            einheiten = st.number_input(
+            einheiten = st.slider(
                 f"Anzahl der Einheiten für {benutzer_option} (Max: {remaining_quantity}):",
                 min_value=1, 
                 max_value=remaining_quantity,
                 value=1,
-                key=f"units_input_{index}_{remaining_quantity}_{row['Name']}"
+                key=f"units_slider_{index}_{remaining_quantity}_{row['Name']}"
             )
 
             # Button zur Bestätigung der Zuweisung
