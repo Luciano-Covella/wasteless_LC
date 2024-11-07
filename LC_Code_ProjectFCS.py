@@ -42,23 +42,31 @@ for index, row in df.iterrows():
             # Zeige den Benutzernamen
             st.write(benutzer_name)
             
-            # Slider zur Zuweisung der Anzahl der Einheiten
-            einheiten = st.slider(
-                f"Anzahl der Einheiten für {benutzer_name}",
-                min_value=0,
-                max_value=total_quantity,  # Feste Skala mit der Gesamtmenge
-                value=0,
-                key=f"slider_{index}_{benutzer_name}"
-            )
+            # Initialisiere den Zähler für die zugewiesene Anzahl von Einheiten
+            if f"{benutzer_name}_{index}" not in st.session_state:
+                st.session_state[f"{benutzer_name}_{index}"] = 0
+
+            # Zeige die aktuelle Anzahl
+            einheiten = st.session_state[f"{benutzer_name}_{index}"]
+
+            # Erhöhe die Anzahl mit der "+" Taste
+            if st.button(f"+ für {benutzer_name}", key=f"plus_{index}_{benutzer_name}"):
+                if einheiten < remaining_quantity:
+                    einheiten += 1
+                    st.session_state[f"{benutzer_name}_{index}"] = einheiten
             
-            # Begrenze die Anzahl der Einheiten auf die verbleibende Menge
-            if einheiten > remaining_quantity:
-                einheiten = remaining_quantity
+            # Verringere die Anzahl mit der "-" Taste
+            if st.button(f"- für {benutzer_name}", key=f"minus_{index}_{benutzer_name}"):
+                if einheiten > 0:
+                    einheiten -= 1
+                    st.session_state[f"{benutzer_name}_{index}"] = einheiten
             
-            # Wenn Einheiten zugewiesen werden, füge sie zur Zuweisungsliste hinzu
-            if einheiten > 0:
-                df.at[index, "Zugewiesen an"].extend([benutzer_name] * einheiten)
-                remaining_quantity -= einheiten
+            # Aktualisiere die Zuweisungsliste entsprechend der Anzahl
+            zugewiesen = [benutzer_name] * einheiten
+            df.at[index, "Zugewiesen an"] = zugewiesen
+
+            # Zeige die aktuelle Zuweisung für den Benutzer
+            st.write(f"Anzahl für {benutzer_name}: {einheiten}")
 
 # Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Aktualisierte Lebensmittelübersicht")
