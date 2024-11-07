@@ -31,9 +31,6 @@ for index, row in df.iterrows():
     
     # Verbleibende Menge berechnen und sicherstellen, dass sie gültig ist
     remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])
-    remaining_quantity = max(0, int(remaining_quantity))  # Sicherstellen, dass es eine positive Ganzzahl ist
-    
-    # Nur fortfahren, wenn noch Einheiten verfügbar sind
     if remaining_quantity > 0:
         # Erstelle eine horizontale Anordnung der Benutzer mit `st.columns`
         columns = st.columns(len(benutzer))
@@ -46,18 +43,16 @@ for index, row in df.iterrows():
                 
                 # Vertikaler Slider zur Zuweisung der Anzahl der Einheiten
                 einheiten = st.slider(
-                    f"Anzahl der Einheiten für {benutzer_name} (Max: {remaining_quantity}):",
+                    f"Anzahl der Einheiten für {benutzer_name}",
                     min_value=0,
                     max_value=remaining_quantity,
                     value=0,
-                    key=f"units_slider_{index}_{benutzer_name}_{row['Name']}",
-                    orientation="vertical"  # Slider senkrecht anzeigen
+                    key=f"slider_{index}_{benutzer_name}"
                 )
                 
-                # Füge die Benutzerzuweisungen hinzu, wenn Einheiten zugewiesen werden
+                # Wenn Einheiten zugewiesen werden, füge sie zur Zuweisungsliste hinzu
                 if einheiten > 0:
                     df.at[index, "Zugewiesen an"].extend([benutzer_name] * einheiten)
-                    remaining_quantity -= einheiten
 
 # Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Aktualisierte Lebensmittelübersicht")
