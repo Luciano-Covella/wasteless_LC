@@ -30,7 +30,6 @@ for index, row in df.iterrows():
     # Verbleibende Menge berechnen
     remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])
     
-    # Nur fortfahren, wenn noch Einheiten verfügbar sind
     if remaining_quantity > 0:
         st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {remaining_quantity})")
         
@@ -43,23 +42,24 @@ for index, row in df.iterrows():
                 # Zeige den Benutzernamen
                 st.write(benutzer_name)
                 
-                # Slider zur Zuweisung der Anzahl der Einheiten
-                einheiten = st.slider(
-                    f"Anzahl der Einheiten für {benutzer_name}",
-                    min_value=0,
-                    max_value=remaining_quantity,
-                    value=0,
-                    key=f"slider_{index}_{benutzer_name}"
-                )
-                
-                # Wenn Einheiten zugewiesen werden, füge sie zur Zuweisungsliste hinzu
-                if einheiten > 0:
-                    df.at[index, "Zugewiesen an"].extend([benutzer_name] * einheiten)
-                    remaining_quantity -= einheiten
-
-    else:
-        # Wenn keine Einheiten mehr verfügbar sind, informiere den Benutzer
-        st.write(f"Alle {row['Name']} sind zugewiesen.")
+                # Überprüfe, ob noch Einheiten übrig sind, um den Slider zu aktivieren
+                if remaining_quantity > 0:
+                    # Slider zur Zuweisung der Anzahl der Einheiten
+                    einheiten = st.slider(
+                        f"Anzahl der Einheiten für {benutzer_name}",
+                        min_value=0,
+                        max_value=remaining_quantity,
+                        value=0,
+                        key=f"slider_{index}_{benutzer_name}"
+                    )
+                    
+                    # Wenn Einheiten zugewiesen werden, füge sie zur Zuweisungsliste hinzu
+                    if einheiten > 0:
+                        df.at[index, "Zugewiesen an"].extend([benutzer_name] * einheiten)
+                        remaining_quantity -= einheiten
+                else:
+                    # Deaktiviere den Slider, wenn keine Einheiten mehr übrig sind
+                    st.write("Keine Einheiten mehr verfügbar.")
 
 # Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Aktualisierte Lebensmittelübersicht")
