@@ -49,18 +49,19 @@ for index, row in df.iterrows():
             # Zeige die aktuelle Anzahl
             einheiten = st.session_state[f"{benutzer_name}_{index}"]
 
-            # Erhöhe die Anzahl mit der "+" Taste
-            if st.button("➕", key=f"plus_{index}_{benutzer_name}"):
+            # Die "+" Taste ist nur aktiv, wenn noch Einheiten verfügbar sind
+            if remaining_quantity > 0 and st.button("➕", key=f"plus_{index}_{benutzer_name}"):
                 if einheiten < remaining_quantity:
                     einheiten += 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
-            
-            # Verringere die Anzahl mit der "-" Taste
-            if st.button("➖", key=f"minus_{index}_{benutzer_name}"):
-                if einheiten > 0:
-                    einheiten -= 1
-                    st.session_state[f"{benutzer_name}_{index}"] = einheiten
-            
+                    remaining_quantity -= 1  # Verringere die verfügbare Menge
+
+            # Die "-" Taste ist nur aktiv, wenn die Anzahl größer als 0 ist
+            if einheiten > 0 and st.button("➖", key=f"minus_{index}_{benutzer_name}"):
+                einheiten -= 1
+                st.session_state[f"{benutzer_name}_{index}"] = einheiten
+                remaining_quantity += 1  # Erhöhe die verfügbare Menge
+
             # Aktualisiere die Zuweisungsliste entsprechend der Anzahl
             zugewiesen = [benutzer_name] * einheiten
             df.at[index, "Zugewiesen an"] = zugewiesen
