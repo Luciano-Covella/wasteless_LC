@@ -77,10 +77,6 @@ for index, row in df.iterrows():
             # Zeige die aktuelle Zuweisung für den Benutzer
             st.write(f"Anzahl für {benutzer_name}: {einheiten}")
 
-# Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
-st.subheader("Aktualisierte Lebensmittelübersicht")
-st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
-
 # Berechnung der anteiligen Kosten pro Benutzer
 st.subheader("Kosten pro Benutzer")
 kosten_pro_benutzer = {benutzer: 0 for benutzer in benutzer}
@@ -91,6 +87,6 @@ for index, row in df.iterrows():
     for zugewiesener_benutzer in row["Zugewiesen an"]:
         kosten_pro_benutzer[zugewiesener_benutzer] += preis_pro_einheit
 
-# Zeige die anteiligen Kosten für jeden Benutzer
-for b, kosten in kosten_pro_benutzer.items():
-    st.write(f"{b}: {kosten:.2f} €")
+# Zeige die anteiligen Kosten für jeden Benutzer als Tabelle
+kosten_df = pd.DataFrame(list(kosten_pro_benutzer.items()), columns=["Benutzer", "Kosten (€)"])
+st.table(kosten_df)
