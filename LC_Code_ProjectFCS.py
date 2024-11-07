@@ -20,27 +20,13 @@ df["Zugewiesen an"] = [[] for _ in range(len(df))]  # Leere Listen für Zuweisun
 # CSS-Stile für die farbigen Umrandungen der Buttons
 st.markdown("""
     <style>
-    .plus-button {
-        display: inline-block;
-        padding: 8px 16px;
-        border: 2px solid green;
-        border-radius: 5px;
-        color: green;
-        font-weight: bold;
-        cursor: pointer;
+    .stButton > button.plus-button {
+        border: 2px solid green !important;
+        color: green !important;
     }
-    .minus-button {
-        display: inline-block;
-        padding: 8px 16px;
-        border: 2px solid red;
-        border-radius: 5px;
-        color: red;
-        font-weight: bold;
-        cursor: pointer;
-    }
-    .plus-button:disabled, .minus-button:disabled {
-        cursor: not-allowed;
-        opacity: 0.5;
+    .stButton > button.minus-button {
+        border: 2px solid red !important;
+        color: red !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -85,26 +71,27 @@ for index, row in df.iterrows():
             remaining_quantity = total_quantity - zugewiesene_menge
 
             # "+" Button
-            plus_button_html = f"""
-                <button class="plus-button" onclick="window.location.reload();" { 'disabled' if remaining_quantity <= 0 else '' }>
-                    ➕
-                </button>
-            """
-            st.markdown(plus_button_html, unsafe_allow_html=True)
-            if st.session_state.get(f"click_plus_{index}_{benutzer_name}", False) and remaining_quantity > 0:
-                st.session_state[f"{benutzer_name}_{index}"] += 1
-                st.session_state[f"click_plus_{index}_{benutzer_name}"] = False
+            if st.button("➕", key=f"plus_{index}_{benutzer_name}", disabled=remaining_quantity <= 0, help="Plus"):
+                if einheiten < total_quantity:
+                    einheiten += 1
+                    st.session_state[f"{benutzer_name}_{index}"] = einheiten
 
             # "-" Button
-            minus_button_html = f"""
-                <button class="minus-button" onclick="window.location.reload();" { 'disabled' if einheiten <= 0 else '' }>
-                    ➖
-                </button>
-            """
-            st.markdown(minus_button_html, unsafe_allow_html=True)
-            if st.session_state.get(f"click_minus_{index}_{benutzer_name}", False) and einheiten > 0:
-                st.session_state[f"{benutzer_name}_{index}"] -= 1
-                st.session_state[f"click_minus_{index}_{benutzer_name}"] = False
+            if st.button("➖", key=f"minus_{index}_{benutzer_name}", disabled=einheiten <= 0, help="Minus"):
+                if einheiten > 0:
+                    einheiten -= 1
+                    st.session_state[f"{benutzer_name}_{index}"] = einheiten
+
+            # CSS-Klassen hinzufügen, um die Schaltflächen zu stylen
+            st.markdown(
+                f'<style>.stButton > button[{f"plus_{index}_{benutzer_name}"]}].plus-button</style>',
+                unsafe_allow_html=True,
+            )
+
+            st.markdown(
+                f'<style>.stButton > button[{f"minus_{index}_{benutzer_name}"]}].minus-button</style>',
+                unsafe_allow_html=True,
+            )
 
             # Zeige die aktuelle Zuweisung für den Benutzer
             st.write(f"Anzahl für {benutzer_name}: {einheiten}")
