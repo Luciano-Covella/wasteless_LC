@@ -30,7 +30,8 @@ for index, row in df.iterrows():
     st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {row['Menge'] - len(row['Zugewiesen an'])})")
     
     # Verbleibende Menge berechnen und sicherstellen, dass sie nicht negativ ist
-    remaining_quantity = max(0, row["Menge"] - len(row["Zugewiesen an"]))
+    remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])
+    remaining_quantity = max(0, remaining_quantity)  # Verbleibende Menge auf 0 setzen, falls negativ
     
     # Erstelle eine horizontale Anordnung der Benutzer mit `st.columns`
     columns = st.columns(len(benutzer))
@@ -43,14 +44,18 @@ for index, row in df.iterrows():
                 st.write(benutzer_name)
                 
                 # Vertikaler Slider zur Zuweisung der Anzahl der Einheiten
-                einheiten = st.slider(
-                    f"Anzahl der Einheiten für {benutzer_name} (Max: {remaining_quantity}):",
-                    min_value=0,
-                    max_value=remaining_quantity,
-                    value=0,
-                    key=f"units_slider_{index}_{benutzer_name}_{row['Name']}",
-                    orientation="vertical"  # Slider senkrecht anzeigen
-                )
+                try:
+                    einheiten = st.slider(
+                        f"Anzahl der Einheiten für {benutzer_name} (Max: {remaining_quantity}):",
+                        min_value=0,
+                        max_value=int(remaining_quantity),  # Sicherstellen, dass max_value ein ganzzahliger Wert ist
+                        value=0,
+                        key=f"units_slider_{index}_{benutzer_name}_{row['Name']}",
+                        orientation="vertical"  # Slider senkrecht anzeigen
+                    )
+                except TypeError:
+                    # Fallback-Wert verwenden, falls ein Fehler auftritt
+                    einheiten = 0
                 
                 # Füge die Benutzerzuweisungen hinzu, wenn Einheiten zugewiesen werden
                 if einheiten > 0:
