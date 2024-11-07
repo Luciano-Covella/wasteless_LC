@@ -3,9 +3,9 @@ import pandas as pd
 
 # Beispiel-Daten: Liste der Lebensmittel mit allen Details
 lebensmittel_data = [
-    {"Name": "Apfel", "Preis": 2.5, "Menge": 1, "Ablaufdatum": "2024-11-10"},
-    {"Name": "Milch", "Preis": 1.2, "Menge": 1, "Ablaufdatum": "2024-11-05"},
-    {"Name": "Brot", "Preis": 3.0, "Menge": 1, "Ablaufdatum": "2024-11-03"}
+    {"Name": "Apfel", "Preis": 2.5, "Menge": 1, "Ablaufdatum": "2024-11-10", "Anzahl der Käufe": 5},
+    {"Name": "Milch", "Preis": 1.2, "Menge": 1, "Ablaufdatum": "2024-11-05", "Anzahl der Käufe": 3},
+    {"Name": "Brot", "Preis": 3.0, "Menge": 1, "Ablaufdatum": "2024-11-03", "Anzahl der Käufe": 7}
 ]
 
 # Liste der Benutzer
@@ -20,9 +20,9 @@ df["Zugewiesen an"] = None
 # Streamlit-Anwendung
 st.title("Lebensmittel-Zuweisung an Benutzer")
 
-# Zeige die Lebensmittelübersicht (nur Name und Preis)
+# Zeige die Lebensmittelübersicht (Name, Preis, Anzahl der Käufe)
 st.subheader("Lebensmittelübersicht")
-st.dataframe(df[["Name", "Preis"]])
+st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]])
 
 # Zuweisungsformular für jedes Lebensmittel
 st.subheader("Lebensmittel einem Benutzer zuweisen")
@@ -36,9 +36,9 @@ for index, row in df.iterrows():
     # Aktualisiere die Zuweisung im DataFrame
     df.at[index, "Zugewiesen an"] = benutzer_option if benutzer_option != "Niemand" else None
 
-# Zeige die aktualisierte Tabelle (nur Name und Preis)
+# Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe)
 st.subheader("Aktualisierte Lebensmittelübersicht")
-st.dataframe(df[["Name", "Preis"]])
+st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]])
 
 # Berechnung der anteiligen Kosten pro Benutzer
 st.subheader("Anteiliges Bezahlen")
