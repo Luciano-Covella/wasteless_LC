@@ -20,9 +20,9 @@ df["Zugewiesen an"] = None
 # Streamlit-Anwendung
 st.title("Lebensmittel-Zuweisung an Benutzer")
 
-# Zeige die Lebensmittelübersicht (Name, Preis, Anzahl der Käufe)
+# Zeige die Lebensmittelübersicht (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Lebensmittelübersicht")
-st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]])
+st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]], index=False)
 
 # Zuweisungsformular für jedes Lebensmittel
 st.subheader("Lebensmittel einem Benutzer zuweisen")
@@ -36,9 +36,9 @@ for index, row in df.iterrows():
     # Aktualisiere die Zuweisung im DataFrame
     df.at[index, "Zugewiesen an"] = benutzer_option if benutzer_option != "Niemand" else None
 
-# Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe)
+# Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Aktualisierte Lebensmittelübersicht")
-st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]])
+st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]], index=False)
 
 # Berechnung der anteiligen Kosten pro Benutzer
 st.subheader("Anteiliges Bezahlen")
