@@ -32,21 +32,30 @@ for index, row in df.iterrows():
     # Verbleibende Menge berechnen
     remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])
     
-    # Benutzer einzeln die Anzahl zuweisen, bis alle Einheiten aufgeteilt sind
-    for benutzer in benutzer:
+    # Erstelle eine horizontale Anordnung der Benutzer mit `st.columns`
+    columns = st.columns(len(benutzer))
+    
+    # Benutzer einzeln die Anzahl zuweisen
+    for col, benutzer_name in zip(columns, benutzer):
         if remaining_quantity > 0:
-            einheiten = st.slider(
-                f"Anzahl der Einheiten für {benutzer} (Max: {remaining_quantity}):",
-                min_value=0,
-                max_value=remaining_quantity,
-                value=0,
-                key=f"units_slider_{index}_{benutzer}_{row['Name']}"
-            )
-            
-            # Füge die Benutzerzuweisungen hinzu, wenn Einheiten zugewiesen werden
-            if einheiten > 0:
-                df.at[index, "Zugewiesen an"].extend([benutzer] * einheiten)
-                remaining_quantity -= einheiten
+            with col:
+                # Zeige den Benutzernamen
+                st.write(benutzer_name)
+                
+                # Vertikaler Slider zur Zuweisung der Anzahl der Einheiten
+                einheiten = st.slider(
+                    f"Anzahl der Einheiten für {benutzer_name} (Max: {remaining_quantity}):",
+                    min_value=0,
+                    max_value=remaining_quantity,
+                    value=0,
+                    key=f"units_slider_{index}_{benutzer_name}_{row['Name']}",
+                    orientation="vertical"  # Slider senkrecht anzeigen
+                )
+                
+                # Füge die Benutzerzuweisungen hinzu, wenn Einheiten zugewiesen werden
+                if einheiten > 0:
+                    df.at[index, "Zugewiesen an"].extend([benutzer_name] * einheiten)
+                    remaining_quantity -= einheiten
 
 # Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Aktualisierte Lebensmittelübersicht")
