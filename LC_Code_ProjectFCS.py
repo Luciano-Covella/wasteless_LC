@@ -36,7 +36,7 @@ for index, row in df.iterrows():
             f"Wähle einen Benutzer (Verbleibend: {remaining_quantity}):",
             ["Niemand"] + benutzer,
             index=0,
-            key=f"user_select_{index}_{remaining_quantity}"
+            key=f"user_select_{index}_{remaining_quantity}"  # Eindeutiger key-Wert
         )
         if benutzer_option != "Niemand":
             # Reduzieren Sie die verbleibende Menge und fügen Sie die Zuweisung hinzu
