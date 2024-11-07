@@ -27,39 +27,38 @@ st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 # Zuweisungsformular für jedes Lebensmittel
 st.subheader("Lebensmittel einem Benutzer zuweisen")
 for index, row in df.iterrows():
-    # Verbleibende Menge berechnen
-    remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])
+    # Gesamtmenge und verbleibende Menge berechnen
+    total_quantity = row["Menge"]
+    remaining_quantity = total_quantity - len(row["Zugewiesen an"])
     
-    if remaining_quantity > 0:
-        st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {remaining_quantity})")
-        
-        # Erstelle eine horizontale Anordnung der Benutzer mit `st.columns`
-        columns = st.columns(len(benutzer))
-        
-        # Benutzer einzeln die Anzahl zuweisen
-        for col, benutzer_name in zip(columns, benutzer):
-            with col:
-                # Zeige den Benutzernamen
-                st.write(benutzer_name)
-                
-                # Überprüfe, ob noch Einheiten übrig sind, um den Slider zu aktivieren
-                if remaining_quantity > 0:
-                    # Slider zur Zuweisung der Anzahl der Einheiten
-                    einheiten = st.slider(
-                        f"Anzahl der Einheiten für {benutzer_name}",
-                        min_value=0,
-                        max_value=remaining_quantity,
-                        value=0,
-                        key=f"slider_{index}_{benutzer_name}"
-                    )
-                    
-                    # Wenn Einheiten zugewiesen werden, füge sie zur Zuweisungsliste hinzu
-                    if einheiten > 0:
-                        df.at[index, "Zugewiesen an"].extend([benutzer_name] * einheiten)
-                        remaining_quantity -= einheiten
-                else:
-                    # Deaktiviere den Slider, wenn keine Einheiten mehr übrig sind
-                    st.write("Keine Einheiten mehr verfügbar.")
+    st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {remaining_quantity})")
+    
+    # Erstelle eine horizontale Anordnung der Benutzer mit `st.columns`
+    columns = st.columns(len(benutzer))
+    
+    # Benutzer einzeln die Anzahl zuweisen
+    for col, benutzer_name in zip(columns, benutzer):
+        with col:
+            # Zeige den Benutzernamen
+            st.write(benutzer_name)
+            
+            # Slider zur Zuweisung der Anzahl der Einheiten
+            einheiten = st.slider(
+                f"Anzahl der Einheiten für {benutzer_name}",
+                min_value=0,
+                max_value=total_quantity,  # Feste Skala mit der Gesamtmenge
+                value=0,
+                key=f"slider_{index}_{benutzer_name}"
+            )
+            
+            # Begrenze die Anzahl der Einheiten auf die verbleibende Menge
+            if einheiten > remaining_quantity:
+                einheiten = remaining_quantity
+            
+            # Wenn Einheiten zugewiesen werden, füge sie zur Zuweisungsliste hinzu
+            if einheiten > 0:
+                df.at[index, "Zugewiesen an"].extend([benutzer_name] * einheiten)
+                remaining_quantity -= einheiten
 
 # Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Aktualisierte Lebensmittelübersicht")
