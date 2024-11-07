@@ -24,6 +24,22 @@ st.title("Lebensmittel-Zuweisung an Benutzer")
 st.subheader("Lebensmittelübersicht")
 st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 
+# CSS-Stile für die farbigen Umrandungen der Buttons
+st.markdown("""
+    <style>
+    .plus-button {
+        border: 2px solid green !important;
+        border-radius: 5px;
+        color: green !important;
+    }
+    .minus-button {
+        border: 2px solid red !important;
+        border-radius: 5px;
+        color: red !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Zuweisungsformular für jedes Lebensmittel
 st.subheader("Lebensmittel einem Benutzer zuweisen")
 for index, row in df.iterrows():
@@ -58,14 +74,14 @@ for index, row in df.iterrows():
 
             # Die "+" Taste ist nur aktiv, wenn noch Einheiten verfügbar sind
             plus_disabled = remaining_quantity <= 0
-            if st.button("➕", key=f"plus_{index}_{benutzer_name}", disabled=plus_disabled):
+            if st.button(f"➕", key=f"plus_{index}_{benutzer_name}", disabled=plus_disabled, help="Plus", css_classes=["plus-button"]):
                 if einheiten < total_quantity:
                     einheiten += 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
 
             # Die "-" Taste ist nur aktiv, wenn die Anzahl größer als 0 ist
             minus_disabled = einheiten <= 0
-            if st.button("➖", key=f"minus_{index}_{benutzer_name}", disabled=minus_disabled):
+            if st.button(f"➖", key=f"minus_{index}_{benutzer_name}", disabled=minus_disabled, help="Minus", css_classes=["minus-button"]):
                 if einheiten > 0:
                     einheiten -= 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
@@ -87,6 +103,6 @@ for index, row in df.iterrows():
     for zugewiesener_benutzer in row["Zugewiesen an"]:
         kosten_pro_benutzer[zugewiesener_benutzer] += preis_pro_einheit
 
-# Zeige die anteiligen Kosten für jeden Benutzer als Tabelle
-kosten_df = pd.DataFrame(list(kosten_pro_benutzer.items()), columns=["Benutzer", "Kosten (€)"])
-st.table(kosten_df)
+# Zeige die anteiligen Kosten für jeden Benutzer
+for b, kosten in kosten_pro_benutzer.items():
+    st.write(f"{b}: {kosten:.2f} €")
