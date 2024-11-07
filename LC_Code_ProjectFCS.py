@@ -29,32 +29,24 @@ st.subheader("Lebensmittel einem Benutzer zuweisen")
 for index, row in df.iterrows():
     st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {row['Menge'] - len(row['Zugewiesen an'])})")
     
-    # Benutzer auswählen
-    remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])  # Verbleibende Menge
-    if remaining_quantity > 0:
-        benutzer_option = st.selectbox(
-            f"Wähle einen Benutzer für {row['Name']} (Verbleibend: {remaining_quantity}):",
-            ["Niemand"] + benutzer,
-            index=0,
-            key=f"user_select_{index}_{remaining_quantity}_{row['Name']}"
-        )
-
-        if benutzer_option != "Niemand":
-            # Anzahl der Einheiten auswählen
+    # Verbleibende Menge berechnen
+    remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])
+    
+    # Benutzer einzeln die Anzahl zuweisen, bis alle Einheiten aufgeteilt sind
+    for benutzer in benutzer:
+        if remaining_quantity > 0:
             einheiten = st.slider(
-                f"Anzahl der Einheiten für {benutzer_option} (Max: {remaining_quantity}):",
-                min_value=1, 
+                f"Anzahl der Einheiten für {benutzer} (Max: {remaining_quantity}):",
+                min_value=0,
                 max_value=remaining_quantity,
-                value=1,
-                key=f"units_slider_{index}_{remaining_quantity}_{row['Name']}"
+                value=0,
+                key=f"units_slider_{index}_{benutzer}_{row['Name']}"
             )
-
-            # Button zur Bestätigung der Zuweisung
-            if st.button(f"{einheiten} Einheiten zuweisen", key=f"assign_button_{index}_{remaining_quantity}_{row['Name']}"):
-                # Füge die Benutzerzuweisungen hinzu
-                for _ in range(einheiten):
-                    df.at[index, "Zugewiesen an"].append(benutzer_option)
-                st.success(f"{einheiten} Einheiten von {row['Name']} wurden {benutzer_option} zugewiesen.")
+            
+            # Füge die Benutzerzuweisungen hinzu, wenn Einheiten zugewiesen werden
+            if einheiten > 0:
+                df.at[index, "Zugewiesen an"].extend([benutzer] * einheiten)
+                remaining_quantity -= einheiten
 
 # Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Aktualisierte Lebensmittelübersicht")
