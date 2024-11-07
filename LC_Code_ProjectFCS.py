@@ -55,7 +55,7 @@ for index, row in df.iterrows():
             # Die "+" Taste ist nur aktiv, wenn noch Einheiten verfügbar sind
             plus_disabled = remaining_quantity <= 0
             if st.button("➕", key=f"plus_{index}_{benutzer_name}", disabled=plus_disabled):
-                if einheiten < total_quantity and remaining_quantity > 0:
+                if einheiten < total_quantity:
                     einheiten += 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
 
