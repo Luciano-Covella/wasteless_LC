@@ -60,4 +60,5 @@ st.subheader("Aktualisierte Lebensmittelübersicht")
 st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 
 # Berechnung der anteiligen Kosten pro Benutzer
-st.subheader("Kosten
+st.subheader("Kosten pro Benutzer")
+
