@@ -66,32 +66,21 @@ for index, row in df.iterrows():
             # Zeige die aktuelle Anzahl
             einheiten = st.session_state[f"{benutzer_name}_{index}"]
 
-            # Berechne remaining_quantity vor jedem Button-Klick, basierend auf dem aktuellen Zustand
-            zugewiesene_menge = sum([st.session_state.get(f"{benutzer_name}_{index}", 0) for benutzer_name in benutzer])
-            remaining_quantity = total_quantity - zugewiesene_menge
-
-            # "+" Button
-            if st.button("➕", key=f"plus_{index}_{benutzer_name}", disabled=remaining_quantity <= 0, help="Plus"):
+            # Die "+" Taste ist nur aktiv, wenn noch Einheiten verfügbar sind
+            plus_disabled = remaining_quantity <= 0
+            plus_button = st.button("➕", key=f"plus_{index}_{benutzer_name}", disabled=plus_disabled)
+            if plus_button:
                 if einheiten < total_quantity:
                     einheiten += 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
 
-            # "-" Button
-            if st.button("➖", key=f"minus_{index}_{benutzer_name}", disabled=einheiten <= 0, help="Minus"):
+            # Die "-" Taste ist nur aktiv, wenn die Anzahl größer als 0 ist
+            minus_disabled = einheiten <= 0
+            minus_button = st.button("➖", key=f"minus_{index}_{benutzer_name}", disabled=minus_disabled)
+            if minus_button:
                 if einheiten > 0:
                     einheiten -= 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
-
-            # CSS-Klassen hinzufügen, um die Schaltflächen zu stylen
-            st.markdown(
-                f'<style>.stButton > button[{f"plus_{index}_{benutzer_name}"]}].plus-button</style>',
-                unsafe_allow_html=True,
-            )
-
-            st.markdown(
-                f'<style>.stButton > button[{f"minus_{index}_{benutzer_name}"]}].minus-button</style>',
-                unsafe_allow_html=True,
-            )
 
             # Zeige die aktuelle Zuweisung für den Benutzer
             st.write(f"Anzahl für {benutzer_name}: {einheiten}")
