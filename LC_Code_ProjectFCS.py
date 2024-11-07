@@ -1,8 +1,7 @@
 import streamlit as st
 import pandas as pd
-import streamlit_dragndrop as dnd
 
-# Beispiel-Daten
+# Beispiel-Daten (diese könnten aus einer Datenbank geladen werden)
 lebensmittel_data = [
     {"Name": "Apfel", "Preis": 2.5, "Menge": 1, "Ablaufdatum": "2024-11-10"},
     {"Name": "Milch", "Preis": 1.2, "Menge": 1, "Ablaufdatum": "2024-11-05"},
@@ -15,25 +14,42 @@ benutzer = ["Alice", "Bob", "Charlie"]
 # Konvertiere die Lebensmittel-Daten in ein DataFrame
 df = pd.DataFrame(lebensmittel_data)
 
+# Erstelle eine Spalte für die Benutzerzuweisung im DataFrame
+df["Zugewiesen an"] = None
+
 # Streamlit-Anwendung
-st.title("Lebensmittel-Zuweisung per Drag-and-Drop")
+st.title("Lebensmittel-Zuweisung an Benutzer")
 
-# Drag-and-Drop-Funktion
-st.subheader("Ziehen Sie Lebensmittel zu den Benutzern")
+# Zeige die Tabelle mit den Lebensmitteln
+st.subheader("Lebensmittelübersicht")
+st.dataframe(df)
 
-# Erstelle die Drag-and-Drop-Zonen
-zuweisungen = {}
+# Benutzer-Auswahl
+st.subheader("Lebensmittel einem Benutzer zuweisen")
+lebensmittel_option = st.selectbox("Wähle ein Lebensmittel", df["Name"])
+benutzer_option = st.selectbox("Wähle einen Benutzer", benutzer)
+
+# Button zum Zuweisen
+if st.button("Zuweisen"):
+    # Finde den Index des ausgewählten Lebensmittels
+    index = df[df["Name"] == lebensmittel_option].index[0]
+    # Weise den Benutzer zu
+    df.at[index, "Zugewiesen an"] = benutzer_option
+    st.success(f"{lebensmittel_option} wurde {benutzer_option} zugewiesen.")
+
+# Zeige die aktualisierte Tabelle
+st.subheader("Aktualisierte Lebensmittelübersicht")
+st.dataframe(df)
+
+# Berechnung der anteiligen Kosten für jeden Benutzer
+st.subheader("Anteiliges Bezahlen")
+kosten_pro_benutzer = {}
 
 for b in benutzer:
-    st.write(f"Lebensmittel für {b}:")
-    zuweisungen[b] = dnd.dropzone(accepted_types=["text"], key=b)
+    # Summiere die Preise für die Lebensmittel, die dem Benutzer zugewiesen wurden
+    gesamtpreis = df[df["Zugewiesen an"] == b]["Preis"].sum()
+    kosten_pro_benutzer[b] = gesamtpreis
 
-# Zeige die Liste der Lebensmittel, die per Drag-and-Drop zugewiesen werden können
-st.subheader("Lebensmittel:")
-for lebensmittel in df["Name"]:
-    dnd.draggable(label=lebensmittel, value=lebensmittel)
-
-# Speichern und Anzeigen der Zuweisungen
-st.subheader("Zugewiesene Lebensmittel")
-for b in benutzer:
-    st.write(f"{b}: {zuweisungen[b]}")
+# Zeige die Kosten für jeden Benutzer
+for b, kosten in kosten_pro_benutzer.items():
+    st.write(f"{b}: {kosten} €")
