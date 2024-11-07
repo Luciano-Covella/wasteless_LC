@@ -31,12 +31,12 @@ for index, row in df.iterrows():
     
     # Benutzer auswählen
     remaining_quantity = row["Menge"] - len(row["Zugewiesen an"])  # Verbleibende Menge
-    while remaining_quantity > 0:
+    if remaining_quantity > 0:
         benutzer_option = st.selectbox(
             f"Wähle einen Benutzer für {row['Name']} (Verbleibend: {remaining_quantity}):",
             ["Niemand"] + benutzer,
             index=0,
-            key=f"user_select_{index}_{remaining_quantity}"
+            key=f"user_select_{index}_{remaining_quantity}_{row['Name']}"
         )
 
         if benutzer_option != "Niemand":
@@ -46,18 +46,15 @@ for index, row in df.iterrows():
                 min_value=1, 
                 max_value=remaining_quantity,
                 value=1,
-                key=f"units_input_{index}_{remaining_quantity}"
+                key=f"units_input_{index}_{remaining_quantity}_{row['Name']}"
             )
 
             # Button zur Bestätigung der Zuweisung
-            if st.button(f"{einheiten} Einheiten zuweisen", key=f"assign_button_{index}_{remaining_quantity}"):
+            if st.button(f"{einheiten} Einheiten zuweisen", key=f"assign_button_{index}_{remaining_quantity}_{row['Name']}"):
                 # Füge die Benutzerzuweisungen hinzu
                 for _ in range(einheiten):
                     df.at[index, "Zugewiesen an"].append(benutzer_option)
-                remaining_quantity -= einheiten
                 st.success(f"{einheiten} Einheiten von {row['Name']} wurden {benutzer_option} zugewiesen.")
-        else:
-            break
 
 # Zeige die aktualisierte Tabelle (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
 st.subheader("Aktualisierte Lebensmittelübersicht")
