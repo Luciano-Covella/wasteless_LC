@@ -27,9 +27,12 @@ st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 # Zuweisungsformular für jedes Lebensmittel
 st.subheader("Lebensmittel einem Benutzer zuweisen")
 for index, row in df.iterrows():
-    # Gesamtmenge und verbleibende Menge berechnen
+    # Gesamtmenge des Lebensmittels
     total_quantity = row["Menge"]
-    remaining_quantity = total_quantity - len(row["Zugewiesen an"])
+
+    # Berechne die aktuell zugewiesene Gesamtmenge
+    zugewiesene_menge = sum([st.session_state.get(f"{benutzer_name}_{index}", 0) for benutzer_name in benutzer])
+    remaining_quantity = total_quantity - zugewiesene_menge
     
     st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {remaining_quantity})")
     
@@ -42,22 +45,24 @@ for index, row in df.iterrows():
             # Zeige den Benutzernamen
             st.write(benutzer_name)
             
-            # Initialisiere den Zähler für die zugewiesene Anzahl von Einheiten
+            # Initialisiere den Zähler für die zugewiesene Anzahl von Einheiten, falls nicht vorhanden
             if f"{benutzer_name}_{index}" not in st.session_state:
                 st.session_state[f"{benutzer_name}_{index}"] = 0
 
             # Zeige die aktuelle Anzahl
             einheiten = st.session_state[f"{benutzer_name}_{index}"]
 
-            # Die "+" Taste erhöht die Anzahl, aber nur, wenn die Gesamtanzahl nicht überschritten wird
-            if st.button("➕", key=f"plus_{index}_{benutzer_name}", disabled=remaining_quantity <= 0):
+            # Die "+" Taste ist nur aktiv, wenn noch Einheiten verfügbar sind
+            plus_disabled = remaining_quantity <= 0
+            if st.button("➕", key=f"plus_{index}_{benutzer_name}", disabled=plus_disabled):
                 if einheiten < total_quantity:
                     einheiten += 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
                     remaining_quantity -= 1  # Verringere die verfügbare Menge
 
-            # Die "-" Taste verringert die Anzahl, aber nur, wenn die Anzahl größer als 0 ist
-            if st.button("➖", key=f"minus_{index}_{benutzer_name}", disabled=einheiten <= 0):
+            # Die "-" Taste ist nur aktiv, wenn die Anzahl größer als 0 ist
+            minus_disabled = einheiten <= 0
+            if st.button("➖", key=f"minus_{index}_{benutzer_name}", disabled=minus_disabled):
                 if einheiten > 0:
                     einheiten -= 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
