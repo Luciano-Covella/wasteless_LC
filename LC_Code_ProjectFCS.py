@@ -10,7 +10,7 @@ lebensmittel_data = [
 
 # Eingabe der Benutzer
 st.title("Wer war am Einkauf beteiligt?")
-benutzer_input = st.text_input("Geben Sie die Namen der Benutzer ein, getrennt durch ein Komma:")
+benutzer_input = st.text_input("Geben Sie die Namen der Benutzer ein, getrennt durch ein Komma (BSP. Anna, Felix, Peter):")
 
 # Konvertiere die Eingabe in eine Liste von Benutzern
 if benutzer_input:
@@ -51,7 +51,7 @@ if benutzer:
     st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 
     # Zuweisungsformular für jedes Lebensmittel
-    st.subheader("Weise die Lebensmittel einem Benutzer zu")
+    st.subheader("Weise die Lebensmittel einem Benutzer zuc")
     for index, row in df.iterrows():
         # Gesamtmenge des Lebensmittels
         total_quantity = row["Menge"]
