@@ -14,7 +14,7 @@ benutzer_input = st.text_input("Geben Sie die Namen der Benutzer ein, getrennt d
 
 # Konvertiere die Eingabe in eine Liste von Benutzern
 if benutzer_input:
-    benutzer = [name.strip() for name in benutzer_input.split(",")]
+    benutzer = [name.strip() for name in benutzer_input.split(",") if name.strip()]
 else:
     benutzer = []  # Leere Liste, falls keine Benutzer eingegeben wurden
 
