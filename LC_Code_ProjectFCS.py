@@ -14,9 +14,6 @@ benutzer = ["Alice", "Bob", "Charlie"]
 # Konvertiere die Lebensmittel-Daten in ein Pandas DataFrame
 df = pd.DataFrame(lebensmittel_data)
 
-# Füge eine Spalte für die Benutzerzuweisung hinzu
-df["Zugewiesen an"] = [[] for _ in range(len(df))]  # Leere Listen für Zuweisungen
-
 # CSS-Stil für den dicken Strich
 st.markdown("""
     <style>
@@ -52,6 +49,7 @@ for index, row in df.iterrows():
     zugewiesene_menge = sum([st.session_state.get(f"{benutzer_name}_{index}", 0) for benutzer_name in benutzer])
     remaining_quantity = total_quantity - zugewiesene_menge
     
+    # Zeige die verbleibende Menge
     st.write(f"Zuweisung für {row['Name']} (Verfügbare Menge: {remaining_quantity})")
     
     # Erstelle eine horizontale Anordnung der Benutzer mit `st.columns`
