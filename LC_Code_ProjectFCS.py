@@ -9,7 +9,7 @@ lebensmittel_data = [
 ]
 
 # Eingabe der Benutzer
-st.title("Benutzerverwaltung")
+st.title("Wer war am Einkauf beteiligt?")
 benutzer_input = st.text_input("Geben Sie die Namen der Benutzer ein, getrennt durch ein Komma:")
 
 # Konvertiere die Eingabe in eine Liste von Benutzern
@@ -47,11 +47,11 @@ if benutzer:
     st.title("Lebensmittel-Zuweisung an Benutzer")
 
     # Zeige die Lebensmittelübersicht (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
-    st.subheader("Lebensmittelübersicht")
+    st.subheader("Eingescannte Lebensmittel")
     st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 
     # Zuweisungsformular für jedes Lebensmittel
-    st.subheader("Lebensmittel einem Benutzer zuweisen")
+    st.subheader("Weise die Lebensmittel einem Benutzer zu")
     for index, row in df.iterrows():
         # Gesamtmenge des Lebensmittels
         total_quantity = row["Menge"]
