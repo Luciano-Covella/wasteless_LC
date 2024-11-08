@@ -9,8 +9,8 @@ lebensmittel_data = [
 ]
 
 # Eingabe der Benutzer
-st.title("Benutzerverwaltung")
-benutzer_input = st.text_input("Geben Sie die Namen der Benutzer ein, getrennt durch ein Komma:")
+st.title("Wer war am Einkauf beteiligt?")
+benutzer_input = st.text_input("Geben Sie die Namen der Benutzer ein, getrennt durch ein Komma (z.B. Alice, Bob, Charlie):")
 
 # Konvertiere die Eingabe in eine Liste von Benutzern
 if benutzer_input:
@@ -44,15 +44,15 @@ st.markdown("""
 
 # Streamlit-Anwendung für die Zuweisung
 if benutzer:
-    st.title("Lebensmittel-Zuweisung an Benutzer")
+    st.title("Zuteilung der Lebensmittel an die Benutzer")
 
     # Zeige die Lebensmittelübersicht in einer klassischen Liste
-    st.subheader("Lebensmittelübersicht")
+    st.subheader("Hier sind Ihre Einkäufe:")
     for item in lebensmittel_data:
-        st.write(f"- {item['Name']}: {item['Preis']} €")
+        st.write(f"- {item['Name']}: {item['Preis']} CHF")
 
     # Zuweisungsformular für jedes Lebensmittel
-    st.subheader("Lebensmittel einem Benutzer zuweisen")
+    st.subheader("Weisen Sie die Lebensmittel den Benutzern zu")
     for index, row in df.iterrows():
         # Gesamtmenge des Lebensmittels
         total_quantity = row["Menge"]
@@ -101,7 +101,7 @@ if benutzer:
         st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
     # Berechnung der anteiligen Kosten pro Benutzer
-    st.subheader("Kosten pro Benutzer")
+    st.subheader("Kostenaufteilung für jeden Benutzer")
     kosten_pro_benutzer = {benutzer_name: 0 for benutzer_name in benutzer}
 
     # Berechne die Kosten für jeden Benutzer basierend auf den zugewiesenen Einheiten der Lebensmittel
@@ -113,4 +113,4 @@ if benutzer:
 
     # Zeige die anteiligen Kosten für jeden Benutzer
     for benutzer_name, kosten in kosten_pro_benutzer.items():
-        st.write(f"{benutzer_name}: {kosten:.2f} €")
+        st.write(f"{benutzer_name}: {kosten:.2f} CHF")
