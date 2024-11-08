@@ -9,7 +9,7 @@ lebensmittel_data = [
 ]
 
 # Liste der Benutzer
-benutzer = ["Alice", "Bob", "Charlie"]
+benutzer = ["Livio", "Bela", "Luca"]
 
 # Konvertiere die Lebensmittel-Daten in ein Pandas DataFrame
 df = pd.DataFrame(lebensmittel_data)
