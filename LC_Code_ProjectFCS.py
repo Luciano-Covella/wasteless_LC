@@ -10,7 +10,7 @@ lebensmittel_data = [
 
 # Eingabe der Benutzer
 st.title("Wer war am Einkauf beteiligt?")
-benutzer_input = st.text_input("Geben Sie die Namen der Benutzer ein, getrennt durch ein Komma (z.B. Pia, Petra, Peter):")
+benutzer_input = st.text_input("Geben Sie die Namen der Benutzer ein, getrennt durch ein Komma (z.B. Livio, Bela, Luca):")
 
 # Konvertiere die Eingabe in eine Liste von Benutzern
 if benutzer_input:
