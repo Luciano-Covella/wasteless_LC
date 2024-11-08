@@ -84,22 +84,26 @@ for index, row in df.iterrows():
                     einheiten -= 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
 
+            # Aktualisiere die Zuweisungsliste entsprechend der Anzahl
+            df.at[index, "Zugewiesen an"].extend([benutzer_name] * (einheiten - len(df.at[index, "Zugewiesen an"])))
+
             # Zeige die aktuelle Zuweisung für den Benutzer
             st.write(f"Anzahl für {benutzer_name}: {einheiten}")
-
+    
     # Füge den dicken Strich als Trennlinie zwischen den Produkten ein
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
 # Berechnung der anteiligen Kosten pro Benutzer
 st.subheader("Kosten pro Benutzer")
-kosten_pro_benutzer = {benutzer: 0 for benutzer in benutzer}
+kosten_pro_benutzer = {benutzer_name: 0 for benutzer_name in benutzer}
 
 # Berechne die Kosten für jeden Benutzer basierend auf den zugewiesenen Einheiten der Lebensmittel
 for index, row in df.iterrows():
     preis_pro_einheit = row["Preis"] / row["Menge"]
-    for zugewiesener_benutzer in row["Zugewiesen an"]:
-        kosten_pro_benutzer[zugewiesener_benutzer] += preis_pro_einheit
+    for benutzer_name in benutzer:
+        anzahl_einheiten = st.session_state.get(f"{benutzer_name}_{index}", 0)
+        kosten_pro_benutzer[benutzer_name] += anzahl_einheiten * preis_pro_einheit
 
 # Zeige die anteiligen Kosten für jeden Benutzer
-for b, kosten in kosten_pro_benutzer.items():
-    st.write(f"{b}: {kosten:.2f} €")
+for benutzer_name, kosten in kosten_pro_benutzer.items():
+    st.write(f"{benutzer_name}: {kosten:.2f} €")
