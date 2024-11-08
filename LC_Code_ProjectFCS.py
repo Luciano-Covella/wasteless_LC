@@ -17,14 +17,12 @@ df = pd.DataFrame(lebensmittel_data)
 # Füge eine Spalte für die Benutzerzuweisung hinzu
 df["Zugewiesen an"] = [[] for _ in range(len(df))]  # Leere Listen für Zuweisungen
 
-# CSS-Stile für die Umrandungen
+# CSS-Stil für den dicken Strich
 st.markdown("""
     <style>
-    .product-container {
-        border: 2px solid #ddd;
-        border-radius: 10px;
-        padding: 15px;
-        margin-bottom: 20px;
+    .divider {
+        border-top: 4px solid #444;
+        margin: 20px 0;
     }
     .stButton > button.plus-button {
         border: 2px solid green !important;
@@ -47,9 +45,6 @@ st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 # Zuweisungsformular für jedes Lebensmittel
 st.subheader("Lebensmittel einem Benutzer zuweisen")
 for index, row in df.iterrows():
-    # Umrahmung für jedes Produkt
-    st.markdown('<div class="product-container">', unsafe_allow_html=True)
-    
     # Gesamtmenge des Lebensmittels
     total_quantity = row["Menge"]
 
@@ -91,9 +86,9 @@ for index, row in df.iterrows():
 
             # Zeige die aktuelle Zuweisung für den Benutzer
             st.write(f"Anzahl für {benutzer_name}: {einheiten}")
-    
-    # Schließe die Umrahmung
-    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Füge den dicken Strich als Trennlinie zwischen den Produkten ein
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
 # Berechnung der anteiligen Kosten pro Benutzer
 st.subheader("Kosten pro Benutzer")
