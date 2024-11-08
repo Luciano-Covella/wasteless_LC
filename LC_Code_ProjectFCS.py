@@ -9,7 +9,7 @@ lebensmittel_data = [
 ]
 
 # Liste der Benutzer
-benutzer = ["Livio", "Bela", "Luca"]
+benutzer = ["Alice", "Bob", "Charlie"]
 
 # Konvertiere die Lebensmittel-Daten in ein Pandas DataFrame
 df = pd.DataFrame(lebensmittel_data)
@@ -17,9 +17,15 @@ df = pd.DataFrame(lebensmittel_data)
 # Füge eine Spalte für die Benutzerzuweisung hinzu
 df["Zugewiesen an"] = [[] for _ in range(len(df))]  # Leere Listen für Zuweisungen
 
-# CSS-Stile für die farbigen Umrandungen der Buttons
+# CSS-Stile für die Umrandungen
 st.markdown("""
     <style>
+    .product-container {
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
     .stButton > button.plus-button {
         border: 2px solid green !important;
         color: green !important;
@@ -41,6 +47,9 @@ st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
 # Zuweisungsformular für jedes Lebensmittel
 st.subheader("Lebensmittel einem Benutzer zuweisen")
 for index, row in df.iterrows():
+    # Umrahmung für jedes Produkt
+    st.markdown('<div class="product-container">', unsafe_allow_html=True)
+    
     # Gesamtmenge des Lebensmittels
     total_quantity = row["Menge"]
 
@@ -68,22 +77,23 @@ for index, row in df.iterrows():
 
             # Die "+" Taste ist nur aktiv, wenn noch Einheiten verfügbar sind
             plus_disabled = remaining_quantity <= 0
-            plus_button = st.button("➕", key=f"plus_{index}_{benutzer_name}", disabled=plus_disabled)
-            if plus_button:
+            if st.button("➕", key=f"plus_{index}_{benutzer_name}", disabled=plus_disabled):
                 if einheiten < total_quantity:
                     einheiten += 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
 
             # Die "-" Taste ist nur aktiv, wenn die Anzahl größer als 0 ist
             minus_disabled = einheiten <= 0
-            minus_button = st.button("➖", key=f"minus_{index}_{benutzer_name}", disabled=minus_disabled)
-            if minus_button:
+            if st.button("➖", key=f"minus_{index}_{benutzer_name}", disabled=minus_disabled):
                 if einheiten > 0:
                     einheiten -= 1
                     st.session_state[f"{benutzer_name}_{index}"] = einheiten
 
             # Zeige die aktuelle Zuweisung für den Benutzer
             st.write(f"Anzahl für {benutzer_name}: {einheiten}")
+    
+    # Schließe die Umrahmung
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # Berechnung der anteiligen Kosten pro Benutzer
 st.subheader("Kosten pro Benutzer")
