@@ -47,7 +47,7 @@ if benutzer:
     st.title("Zuteilung der Lebensmittel an die Benutzer")
 
     # Zeige die Lebensmittelübersicht in einer klassischen Liste
-    st.subheader("Hier sind Ihre Einkäufe:")
+    st.subheader("Hier sind Ihre gescannten Einkäufe:")
     for item in lebensmittel_data:
         st.write(f"- {item['Name']}: {item['Preis']} CHF")
 
