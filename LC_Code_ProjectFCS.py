@@ -46,9 +46,10 @@ st.markdown("""
 if benutzer:
     st.title("Lebensmittel-Zuweisung an Benutzer")
 
-    # Zeige die Lebensmittelübersicht (Name, Preis, Anzahl der Käufe) ohne Zeilennummerierung
+    # Zeige die Lebensmittelübersicht in einer klassischen Liste
     st.subheader("Lebensmittelübersicht")
-    st.dataframe(df[["Anzahl der Käufe", "Name", "Preis"]].reset_index(drop=True))
+    for item in lebensmittel_data:
+        st.write(f"- {item['Name']}: {item['Preis']} €")
 
     # Zuweisungsformular für jedes Lebensmittel
     st.subheader("Lebensmittel einem Benutzer zuweisen")
