@@ -3,10 +3,10 @@ import pandas as pd
 from PIL import Image
 import requests
 from datetime import datetime
-from settings_page import setup_flat_name, setup_roommates, add_roommate, display_roommates, settingspage, change_flat_name, manage_roommates, remove_roommate
-from fridge_page import delete_product_from_inventory, add_product_to_inventory, fridge_page, ensure_roommate_entries
-from barcode_page import decode_barcode, get_product_info, display_total_expenses, display_purchases, barcode_page
-from recipe_page import recipepage
+from settings_page_2 import setup_flat_name, setup_roommates, add_roommate, display_roommates, settingspage, change_flat_name, manage_roommates, remove_roommate
+from fridge_2 import delete_product_from_inventory, add_product_to_inventory, fridge_page, ensure_roommate_entries
+from barcode_2 import decode_barcode, get_product_info, display_total_expenses, display_purchases, barcode_page
+from recipe_2 import recipepage
 
 # Initialization of session state variables
 if "flate_name" not in st.session_state:
