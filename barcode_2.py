@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from PIL import Image
-from pyzbar.pyzbar import decode
+from pyzbar import decode
 import requests
 from datetime import datetime
 
